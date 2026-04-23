@@ -6,48 +6,38 @@ struct MainView: View {
     var body: some View {
         NavigationStack {
             GeometryReader { proxy in
-                let wideEditors = proxy.size.width >= 900
-                let horizontalButtons = proxy.size.width >= 760
-                let editorHeight = wideEditors ? 360.0 : 220.0
-
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 24) {
-                        header
+                    VStack(alignment: .leading, spacing: 28) {
+                        StatusRailView(status: model.statusState)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
 
-                        if let fallbackMessage = model.fallbackMessage {
-                            StatusBannerView(
-                                title: "Basic local formatting",
-                                message: fallbackMessage,
-                                kind: .warning
-                            )
-                        }
-
-                        if let errorMessage = model.errorMessage {
-                            StatusBannerView(
-                                title: "Couldn’t polish this draft",
-                                message: errorMessage,
-                                kind: .error
-                            )
-                        }
-
-                        if wideEditors {
-                            editorsSection(wideLayout: true, editorHeight: editorHeight)
-                            modeButtonsSection(horizontalLayout: horizontalButtons)
-                        } else {
-                            sourceEditor(minHeight: editorHeight)
-                            modeButtonsSection(horizontalLayout: horizontalButtons)
-                            outputEditor(minHeight: editorHeight)
-                        }
-
-                        footerActions(wideLayout: horizontalButtons)
+                        EditorialEditorCanvasView(
+                            selectedSurface: $model.selectedSurface,
+                            sourceText: $model.sourceText,
+                            polishedText: $model.polishedText,
+                            capability: model.capability,
+                            caption: model.selectedSurfaceCaption,
+                            lastCompletedMode: model.lastCompletedMode,
+                            minHeight: max(proxy.size.height - 308, 440)
+                        )
                     }
-                    .padding(24)
-                    .frame(maxWidth: 1_360)
+                    .padding(.horizontal, horizontalPadding(for: proxy.size.width))
+                    .padding(.top, 18)
+                    .padding(.bottom, 36)
+                    .frame(maxWidth: 1_560)
                     .frame(maxWidth: .infinity)
                 }
-                .background(background.ignoresSafeArea())
+                .scrollDismissesKeyboard(.interactively)
+                .background(editorialBackground.ignoresSafeArea())
+                .safeAreaInset(edge: .bottom) {
+                    actionDock(for: proxy.size.width)
+                        .padding(.horizontal, horizontalPadding(for: proxy.size.width))
+                        .padding(.top, 12)
+                        .padding(.bottom, 10)
+                        .background(.clear)
+                }
             }
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
             .task {
                 model.refreshCapability()
             }
@@ -62,173 +52,157 @@ struct MainView: View {
         }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("PolishPad")
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
-                        .foregroundStyle(.primary)
-
-                    Text("Type or dictate rough text, choose a format, and get a clearer version that stays on your iPad.")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer(minLength: 16)
-
-                Label("Private", systemImage: "lock.shield")
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .background(Color.accentColor.opacity(0.12), in: Capsule())
-                    .foregroundStyle(Color.accentColor)
-            }
-
-            Text("Built for a single flow: dictate or type, tap one polish button, then copy the result into Notes, Mail, or Messages.")
-                .font(.body)
-                .foregroundStyle(.secondary)
-        }
-        .padding(24)
-        .background(
-            LinearGradient(
-                colors: [
-                    Color.white.opacity(0.82),
-                    Color.accentColor.opacity(0.08)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 30, style: .continuous)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .stroke(Color.white.opacity(0.72), lineWidth: 1)
-        )
-    }
-
-    private func editorsSection(wideLayout: Bool, editorHeight: CGFloat) -> some View {
+    private func actionDock(for width: CGFloat) -> some View {
         Group {
-            if wideLayout {
-                HStack(alignment: .top, spacing: 20) {
-                    sourceEditor(minHeight: editorHeight)
-                    outputEditor(minHeight: editorHeight)
+            if width >= 1_200 {
+                HStack(spacing: 12) {
+                    modeButtons
+                    utilityButtons
                 }
             } else {
-                VStack(alignment: .leading, spacing: 20) {
-                    sourceEditor(minHeight: editorHeight)
-                    outputEditor(minHeight: editorHeight)
-                }
-            }
-        }
-    }
-
-    private func sourceEditor(minHeight: CGFloat) -> some View {
-        EditorCard(
-            title: "Your Draft",
-            caption: "Type or use standard iPad dictation. Your original text stays separate from the polished result.",
-            placeholder: "Type or dictate here…",
-            minHeight: minHeight,
-            text: $model.sourceText
-        ) {
-            Label("Type or dictate", systemImage: "mic")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(Color.black.opacity(0.05), in: Capsule())
-        }
-    }
-
-    private func outputEditor(minHeight: CGFloat) -> some View {
-        EditorCard(
-            title: "Polished Result",
-            caption: model.outputStatusText,
-            placeholder: "Your polished text appears here. You can edit it before copying.",
-            minHeight: minHeight,
-            text: $model.polishedText
-        ) {
-            Text(model.capability.outputBadgeText)
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(model.capability.usesFoundationModel ? Color.accentColor : Color.orange)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(
-                    (model.capability.usesFoundationModel ? Color.accentColor : Color.orange)
-                        .opacity(0.12),
-                    in: Capsule()
-                )
-        }
-    }
-
-    private func modeButtonsSection(horizontalLayout: Bool) -> some View {
-        let layout = horizontalLayout ? AnyLayout(HStackLayout(spacing: 16)) : AnyLayout(VStackLayout(spacing: 14))
-
-        return VStack(alignment: .leading, spacing: 14) {
-            Text("Choose a format")
-                .font(.title3.weight(.semibold))
-                .foregroundStyle(.primary)
-
-            layout {
-                ForEach(PolishMode.allCases) { mode in
-                    ModeButton(
-                        mode: mode,
-                        isRunning: model.activeMode == mode
-                    ) {
-                        model.polish(as: mode)
+                VStack(spacing: 12) {
+                    HStack(spacing: 12) {
+                        modeButtons
                     }
-                    .disabled(!model.canPolish)
-                    .opacity(model.canPolish ? 1 : 0.52)
+
+                    HStack(spacing: 12) {
+                        utilityButtons
+                    }
                 }
             }
         }
     }
 
-    private func footerActions(wideLayout: Bool) -> some View {
-        let layout = wideLayout ? AnyLayout(HStackLayout(spacing: 14)) : AnyLayout(VStackLayout(spacing: 12))
-
-        return layout {
+    private var modeButtons: some View {
+        ForEach(PolishMode.allCases) { mode in
             Button {
-                model.copyOutput()
+                model.polish(as: mode)
             } label: {
-                Label(model.copied ? "Copied" : "Copy Output", systemImage: model.copied ? "checkmark" : "doc.on.doc")
-                    .font(.headline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
+                DockPillView(
+                    title: mode.dockTitle,
+                    style: .mode(isActive: model.activeMode == mode),
+                    showsProgress: model.activeMode == mode
+                )
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.accentColor)
-            .disabled(!model.canCopy)
-            .controlSize(.large)
+            .buttonStyle(.plain)
+            .disabled(!model.canPolish)
+            .opacity((model.canPolish || model.activeMode == mode) ? 1 : 0.7)
+        }
+    }
+
+    private var utilityButtons: some View {
+        Group {
+            Button {
+                model.cancelPolish()
+            } label: {
+                DockPillView(title: "Cancel", style: .utility(tint: .polishPadMutedText))
+            }
+            .buttonStyle(.plain)
+            .disabled(!model.canCancel)
+            .opacity(model.canCancel ? 1 : 0.68)
+
+            Button {
+                model.undo()
+            } label: {
+                DockPillView(title: "Undo", style: .utility(tint: .polishPadMutedText))
+            }
+            .buttonStyle(.plain)
+            .disabled(!model.canUndo)
+            .opacity(model.canUndo ? 1 : 0.68)
 
             Button(role: .destructive) {
                 model.showClearConfirmation = true
             } label: {
-                Label("Clear All", systemImage: "trash")
-                    .font(.headline.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 18)
+                DockPillView(title: "Clear", style: .utility(tint: .polishPadDestructive))
             }
-            .buttonStyle(.bordered)
-            .controlSize(.large)
-            .disabled(!model.canPolish && !model.canCopy)
+            .buttonStyle(.plain)
+            .disabled(!model.canClear)
+            .opacity(model.canClear ? 1 : 0.68)
+
+            Button {
+                model.copyOutput()
+            } label: {
+                DockPillView(title: "Copy", style: .utility(tint: .polishPadNavy))
+            }
+            .buttonStyle(.plain)
+            .disabled(!model.canCopy)
+            .opacity(model.canCopy ? 1 : 0.68)
+
+            shareButton
         }
     }
 
-    private var background: some View {
-        LinearGradient(
-            colors: [
-                Color(uiColor: .systemGroupedBackground),
-                Color.accentColor.opacity(0.06),
-                Color.white
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+    @ViewBuilder
+    private var shareButton: some View {
+        if let sharePayload = model.sharePayload {
+            ShareLink(item: sharePayload.text, subject: Text(sharePayload.subject)) {
+                DockPillView(title: "Share", style: .utility(tint: .polishPadNavy))
+            }
+            .buttonStyle(.plain)
+        } else {
+            Button {} label: {
+                DockPillView(title: "Share", style: .utility(tint: .polishPadNavy))
+            }
+            .buttonStyle(.plain)
+            .disabled(true)
+            .opacity(0.68)
+        }
+    }
+
+    private func horizontalPadding(for width: CGFloat) -> CGFloat {
+        switch width {
+        case ..<760:
+            18
+        case ..<1_120:
+            28
+        default:
+            46
+        }
+    }
+
+    private var editorialBackground: some View {
+        ZStack {
+            Color.polishPadPaper
+
+            RadialGradient(
+                colors: [Color.polishPadGlow.opacity(0.46), .clear],
+                center: .topLeading,
+                startRadius: 30,
+                endRadius: 520
+            )
+
+            RadialGradient(
+                colors: [Color.polishPadGlow.opacity(0.34), .clear],
+                center: .bottomTrailing,
+                startRadius: 40,
+                endRadius: 620
+            )
+
+            LinearGradient(
+                colors: [
+                    Color.polishPadShell.opacity(0.48),
+                    .clear,
+                    Color.polishPadShell.opacity(0.22)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        }
     }
 }
 
 #Preview {
     MainView(model: PolishWorkflowModel())
+}
+
+extension Color {
+    static let polishPadPaper = Color(red: 0.972, green: 0.953, blue: 0.922)
+    static let polishPadShell = Color(red: 0.945, green: 0.923, blue: 0.882)
+    static let polishPadGlow = Color(red: 0.929, green: 0.819, blue: 0.639)
+    static let polishPadStroke = Color(red: 0.842, green: 0.775, blue: 0.649)
+    static let polishPadTerracotta = Color(red: 0.79, green: 0.435, blue: 0.223)
+    static let polishPadTeal = Color(red: 0.817, green: 0.879, blue: 0.861)
+    static let polishPadNavy = Color(red: 0.152, green: 0.258, blue: 0.384)
+    static let polishPadMutedText = Color(red: 0.557, green: 0.611, blue: 0.667)
+    static let polishPadDestructive = Color(red: 0.784, green: 0.341, blue: 0.286)
 }

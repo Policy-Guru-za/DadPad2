@@ -1,66 +1,144 @@
 import SwiftUI
 
-struct EditorCard<Trailing: View>: View {
-    let title: String
+struct EditorialEditorCanvasView: View {
+    @Binding var selectedSurface: EditorSurface
+    @Binding var sourceText: String
+    @Binding var polishedText: String
+    let capability: PolishCapability
     let caption: String
-    let placeholder: String
+    let lastCompletedMode: PolishMode?
     let minHeight: CGFloat
-    @Binding var text: String
-    @ViewBuilder let trailing: () -> Trailing
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(title)
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.primary)
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(selectedSurface.canvasTitle)
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.polishPadNavy)
 
                     Text(caption)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.system(.body, design: .rounded))
+                        .foregroundStyle(Color.polishPadNavy.opacity(0.78))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Spacer(minLength: 12)
 
-                trailing()
+                VStack(alignment: .trailing, spacing: 12) {
+                    surfacePicker
+
+                    if selectedSurface == .result {
+                        capabilityBadge
+                    }
+                }
             }
 
             ZStack(alignment: .topLeading) {
-                if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    Text(placeholder)
-                        .font(.title3)
-                        .foregroundStyle(.tertiary)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 10)
+                if activeText.wrappedValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    Text(selectedSurface.placeholder)
+                        .font(.system(size: 22, weight: .regular, design: .rounded))
+                        .foregroundStyle(Color.polishPadMutedText.opacity(0.72))
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 28)
                         .accessibilityHidden(true)
                 }
 
-                TextEditor(text: $text)
-                    .font(.title3)
+                TextEditor(text: activeText)
+                    .font(.system(size: 24, weight: .regular, design: .rounded))
+                    .foregroundStyle(Color.polishPadNavy)
                     .scrollContentBackground(.hidden)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 18)
                     .frame(minHeight: minHeight)
-                    .padding(.horizontal, 2)
-                    .padding(.vertical, 4)
                     .textInputAutocapitalization(.sentences)
                     .autocorrectionDisabled(false)
                     .writingToolsBehavior(.complete)
-                    .accessibilityLabel(title)
+                    .accessibilityLabel(selectedSurface.canvasTitle)
             }
-            .frame(maxWidth: .infinity)
+            .background(innerBackground, in: RoundedRectangle(cornerRadius: 34, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 34, style: .continuous)
+                    .stroke(Color.polishPadStroke.opacity(0.72), lineWidth: 1.2)
+            )
         }
         .padding(22)
-        .background(cardBackground)
-        .overlay(cardOutline)
-        .shadow(color: Color.black.opacity(0.04), radius: 18, y: 8)
+        .background(outerBackground, in: RoundedRectangle(cornerRadius: 40, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 40, style: .continuous)
+                .stroke(Color.polishPadStroke.opacity(0.78), lineWidth: 1.4)
+        )
+        .shadow(color: Color.polishPadGlow.opacity(0.16), radius: 34, y: 14)
     }
 
-    private var cardBackground: some ShapeStyle {
-        .regularMaterial
+    private var activeText: Binding<String> {
+        switch selectedSurface {
+        case .draft:
+            $sourceText
+        case .result:
+            $polishedText
+        }
     }
 
-    private var cardOutline: some View {
-        RoundedRectangle(cornerRadius: 28, style: .continuous)
-            .stroke(Color.white.opacity(0.6), lineWidth: 1)
+    private var surfacePicker: some View {
+        HStack(spacing: 8) {
+            ForEach(EditorSurface.allCases) { surface in
+                Button {
+                    withAnimation(.easeOut(duration: 0.18)) {
+                        selectedSurface = surface
+                    }
+                } label: {
+                    Text(surface.title)
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                        .foregroundStyle(surface == selectedSurface ? Color.polishPadNavy : Color.polishPadMutedText)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 11)
+                        .background(
+                            Capsule()
+                                .fill(surface == selectedSurface ? Color.polishPadPaper : Color.clear)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(6)
+        .background(Color.polishPadShell.opacity(0.72), in: Capsule())
+        .overlay(
+            Capsule()
+                .stroke(Color.polishPadStroke.opacity(0.55), lineWidth: 1)
+        )
+    }
+
+    private var capabilityBadge: some View {
+        let badgeColor = capability.usesFoundationModel ? Color.polishPadNavy : Color.polishPadTerracotta
+
+        return HStack(spacing: 8) {
+            Circle()
+                .fill(badgeColor)
+                .frame(width: 8, height: 8)
+
+            Text(lastCompletedMode.map { "\($0.shortTitle) • \(capability.outputBadgeText)" } ?? capability.outputBadgeText)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundStyle(badgeColor)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(badgeColor.opacity(0.08), in: Capsule())
+    }
+
+    private var outerBackground: some ShapeStyle {
+        LinearGradient(
+            colors: [Color.polishPadPaper.opacity(0.98), Color.polishPadPaper.opacity(0.84)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
+    private var innerBackground: some ShapeStyle {
+        LinearGradient(
+            colors: [Color.polishPadPaper.opacity(0.98), Color.white.opacity(0.58)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
     }
 }

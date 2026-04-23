@@ -1,74 +1,72 @@
 import SwiftUI
 
-struct ModeButton: View {
-    let mode: PolishMode
-    let isRunning: Bool
-    let action: () -> Void
+enum DockPillStyle {
+    case mode(isActive: Bool)
+    case utility(tint: Color)
+}
+
+struct DockPillView: View {
+    let title: String
+    let style: DockPillStyle
+    var showsProgress = false
 
     var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 14) {
-                HStack(spacing: 10) {
-                    Image(systemName: mode.symbolName)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(isRunning ? Color.white : Color.accentColor)
+        HStack(spacing: 10) {
+            Text(title)
+                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .lineLimit(1)
 
-                    Spacer()
-
-                    if isRunning {
-                        ProgressView()
-                            .tint(.white)
-                            .controlSize(.small)
-                    }
-                }
-
-                Text(mode.title)
-                    .font(.headline.weight(.semibold))
-                    .foregroundStyle(isRunning ? Color.white : Color.primary)
-                    .multilineTextAlignment(.leading)
-
-                Text(mode.helpText)
-                    .font(.subheadline)
-                    .foregroundStyle(isRunning ? Color.white.opacity(0.92) : Color.secondary)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+            if showsProgress {
+                ProgressView()
+                    .tint(foregroundColor)
+                    .controlSize(.small)
             }
-            .frame(maxWidth: .infinity, minHeight: 124, alignment: .topLeading)
-            .padding(18)
-            .background(background)
-            .overlay(outline)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(mode.title)
-        .accessibilityHint(mode.helpText)
+        .foregroundStyle(foregroundColor)
+        .frame(maxWidth: .infinity)
+        .frame(minHeight: 74)
+        .padding(.horizontal, 24)
+        .background(backgroundColor, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(borderColor, lineWidth: 1.2)
+        )
+        .shadow(color: shadowColor, radius: 20, y: 8)
     }
 
-    private var background: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(
-                isRunning
-                    ? LinearGradient(
-                        colors: [Color.accentColor, Color.accentColor.opacity(0.78)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    : LinearGradient(
-                        colors: [
-                            Color(uiColor: .secondarySystemBackground),
-                            Color(uiColor: .secondarySystemBackground).opacity(0.92)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-            )
+    private var backgroundColor: Color {
+        switch style {
+        case let .mode(isActive):
+            return isActive ? .polishPadTerracotta : .polishPadPaper
+        case .utility:
+            return .polishPadPaper.opacity(0.96)
+        }
     }
 
-    private var outline: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .stroke(
-                isRunning ? Color.white.opacity(0.36) : Color.white.opacity(0.7),
-                lineWidth: 1
-            )
+    private var foregroundColor: Color {
+        switch style {
+        case let .mode(isActive):
+            return isActive ? Color.white : .polishPadNavy
+        case let .utility(tint):
+            return tint
+        }
+    }
+
+    private var borderColor: Color {
+        switch style {
+        case let .mode(isActive):
+            return isActive ? Color.polishPadTerracotta.opacity(0.72) : Color.polishPadStroke.opacity(0.72)
+        case .utility:
+            return Color.polishPadStroke.opacity(0.72)
+        }
+    }
+
+    private var shadowColor: Color {
+        switch style {
+        case let .mode(isActive):
+            return isActive ? Color.polishPadTerracotta.opacity(0.18) : Color.polishPadGlow.opacity(0.08)
+        case .utility:
+            return Color.polishPadGlow.opacity(0.06)
+        }
     }
 }

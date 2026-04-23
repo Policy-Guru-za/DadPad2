@@ -29,6 +29,17 @@ enum PolishMode: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    var dockTitle: String {
+        switch self {
+        case .note:
+            "Note"
+        case .email:
+            "Email"
+        case .message:
+            "Text"
+        }
+    }
+
     var symbolName: String {
         switch self {
         case .note:
@@ -48,6 +59,17 @@ enum PolishMode: String, CaseIterable, Identifiable, Sendable {
             "Professional email with a sensible greeting and closing."
         case .message:
             "Shorter, warmer, and more conversational than an email."
+        }
+    }
+
+    var shareSubject: String {
+        switch self {
+        case .note:
+            "Polished note"
+        case .email:
+            "Polished email"
+        case .message:
+            "Polished message"
         }
     }
 
