@@ -32,11 +32,11 @@ enum PolishMode: String, CaseIterable, Identifiable, Sendable {
     var dockTitle: String {
         switch self {
         case .note:
-            "Note"
+            "Polish for note"
         case .email:
-            "Email"
+            "Polish for email"
         case .message:
-            "Text"
+            "Polish for text"
         }
     }
 
