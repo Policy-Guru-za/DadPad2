@@ -1,0 +1,51 @@
+name: PolishPad2
+options:
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: 6.0
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 1.0
+schemes:
+  PolishPad2:
+    build:
+      targets:
+        PolishPad2: all
+        PolishPad2Tests: [test]
+    test:
+      gatherCoverageData: false
+      targets:
+        - PolishPad2Tests
+targets:
+  PolishPad2:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: PolishPad2
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ryanlaubscher.PolishPad2
+        PRODUCT_NAME: PolishPad
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: PolishPad2/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: 2
+        DEVELOPMENT_ASSET_PATHS: ""
+  PolishPad2Tests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: PolishPad2Tests
+    dependencies:
+      - target: PolishPad2
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ryanlaubscher.PolishPad2Tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/PolishPad.app/PolishPad"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TARGETED_DEVICE_FAMILY: 2
