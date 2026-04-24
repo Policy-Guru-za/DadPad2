@@ -8,20 +8,20 @@ struct EditorialEditorCanvasView: View {
     let minHeight: CGFloat
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 18) {
             headerRow
             canvasBody
         }
-        .padding(20)
+        .padding(28)
         .background(
-            .regularMaterial,
-            in: RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: PolishPadLayout.outerCorner, style: .continuous)
+                .fill(Color.ppCanvas)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color(.separator).opacity(0.6), lineWidth: 0.5)
+            RoundedRectangle(cornerRadius: PolishPadLayout.outerCorner, style: .continuous)
+                .stroke(Color.ppBorder, lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.04), radius: 16, y: 4)
+        .shadow(color: Color.ppWarmShadow.opacity(0.07), radius: 26, y: 12)
     }
 
     // MARK: - Header
@@ -34,14 +34,53 @@ struct EditorialEditorCanvasView: View {
     }
 
     private var surfacePicker: some View {
-        Picker("Surface", selection: $selectedSurface) {
+        HStack(spacing: 0) {
             ForEach(EditorSurface.allCases) { surface in
-                Text(surface.title).tag(surface)
+                surfaceSegment(for: surface)
             }
         }
-        .pickerStyle(.segmented)
-        .labelsHidden()
-        .frame(maxWidth: 240)
+        .padding(5)
+        .background(
+            Capsule()
+                .fill(Color.ppBackground.opacity(0.65))
+        )
+        .overlay(
+            Capsule()
+                .stroke(Color.ppBorder, lineWidth: 1)
+        )
+        .shadow(color: Color.ppWarmShadow.opacity(0.04), radius: 8, y: 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Draft or Result")
+        .accessibilityHint("Switches between the original draft and polished result.")
+    }
+
+    private func surfaceSegment(for surface: EditorSurface) -> some View {
+        let isSelected = selectedSurface == surface
+
+        return Button {
+            selectedSurface = surface
+        } label: {
+            Text(surface.title)
+                .font(.system(size: 17, weight: .semibold, design: .serif))
+                .foregroundStyle(isSelected ? Color.ppAccent : Color.ppSecondaryText)
+                .frame(width: 116, height: 38)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? Color.ppCardSoft : Color.clear)
+                )
+                .overlay(
+                    Capsule()
+                        .stroke(isSelected ? Color.ppBorder : Color.clear, lineWidth: 1)
+                )
+                .shadow(
+                    color: isSelected ? Color.ppWarmShadow.opacity(0.08) : Color.clear,
+                    radius: 7,
+                    y: 2
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(surface.title)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
     // MARK: - Body
@@ -58,8 +97,8 @@ struct EditorialEditorCanvasView: View {
 
             TextEditor(text: activeText)
                 .font(.system(size: 19, weight: .regular))
-                .foregroundStyle(.primary)
-                .tint(Color.polishPadAccent)
+                .foregroundStyle(Color.ppText)
+                .tint(Color.ppAccent)
                 .scrollContentBackground(.hidden)
                 .padding(.horizontal, 4)
                 .padding(.vertical, 4)
@@ -88,12 +127,23 @@ struct EditorialEditorCanvasView: View {
     private var draftEmptyState: some View {
         VStack(spacing: 14) {
             Spacer(minLength: 0)
-            Image(systemName: "mic")
-                .font(.system(size: 52, weight: .thin))
-                .foregroundStyle(.tertiary)
+            ZStack {
+                Circle()
+                    .fill(Color.ppCanvas)
+                    .frame(width: 76, height: 76)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.ppBorder, lineWidth: 1)
+                    )
+                    .shadow(color: Color.ppWarmShadow.opacity(0.06), radius: 12, y: 5)
+
+                Image(systemName: "mic")
+                    .font(.system(size: 40, weight: .light))
+                    .foregroundStyle(Color.ppAccent)
+            }
             Text("Start typing, or tap the mic to dictate.")
                 .font(.system(size: 17, weight: .regular))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.ppSecondaryText)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
             Spacer(minLength: 0)
@@ -105,7 +155,7 @@ struct EditorialEditorCanvasView: View {
             Spacer(minLength: 0)
             Text("Your polished result will appear here.")
                 .font(.system(size: 17, weight: .regular))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(Color.ppSecondaryText.opacity(0.82))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
             Spacer(minLength: 0)

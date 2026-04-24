@@ -30,10 +30,10 @@ struct StatusRailView: View {
         .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(minHeight: 36)
-        .background(.thinMaterial)
+        .background(Color.ppCanvas.opacity(0.96))
         .overlay(alignment: .bottom) {
             Rectangle()
-                .fill(Color(.separator).opacity(0.6))
+                .fill(Color.ppBorder)
                 .frame(height: 0.5)
         }
     }
@@ -44,11 +44,11 @@ struct StatusRailView: View {
         case .processing:
             ProgressView()
                 .controlSize(.small)
-                .tint(.secondary)
+                .tint(Color.ppAccent)
         case .fallback:
             Image(systemName: "bolt.slash")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.ppSecondaryText)
         case .error:
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 13, weight: .medium))
@@ -76,7 +76,7 @@ struct StatusRailView: View {
         case .error:
             Color(.systemRed)
         case .processing, .fallback, .ready, .copied:
-            .secondary
+            Color.ppSecondaryText
         }
     }
 }
@@ -92,15 +92,15 @@ struct CopiedToastView: View {
 
             Text("Copied to clipboard")
                 .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(.primary)
+                .foregroundStyle(Color.ppText)
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 10)
-        .background(.thinMaterial, in: Capsule())
+        .background(Color.ppCanvas, in: Capsule())
         .overlay(
             Capsule()
-                .stroke(Color(.separator).opacity(0.6), lineWidth: 0.5)
+                .stroke(Color.ppBorder, lineWidth: 0.5)
         )
-        .shadow(color: Color.black.opacity(0.08), radius: 10, y: 2)
+        .shadow(color: Color.ppWarmShadow.opacity(0.08), radius: 10, y: 2)
     }
 }

@@ -8,21 +8,26 @@ struct MainView: View {
         NavigationStack {
             GeometryReader { proxy in
                 ScrollView {
-                    EditorialEditorCanvasView(
-                        selectedSurface: $model.selectedSurface,
-                        sourceText: $model.sourceText,
-                        polishedText: $model.polishedText,
-                        editorIsFocused: $editorIsFocused,
-                        minHeight: max(proxy.size.height - 280, 380)
-                    )
+                    VStack(spacing: 18) {
+                        brandHeader
+
+                        EditorialEditorCanvasView(
+                            selectedSurface: $model.selectedSurface,
+                            sourceText: $model.sourceText,
+                            polishedText: $model.polishedText,
+                            editorIsFocused: $editorIsFocused,
+                            minHeight: editorMinHeight(for: proxy.size)
+                        )
+                    }
                     .padding(.horizontal, horizontalPadding(for: proxy.size.width))
-                    .padding(.top, 12)
-                    .padding(.bottom, 28)
+                    .padding(.top, 20)
+                    .padding(.bottom, 24)
                     .frame(maxWidth: 1_560)
                     .frame(maxWidth: .infinity)
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .background(Color.polishPadWindow.ignoresSafeArea())
+                .scrollIndicators(.hidden)
+                .background(Color.ppBackground.ignoresSafeArea())
                 .safeAreaInset(edge: .top, spacing: 0) {
                     if let status = visibleStatus {
                         StatusRailView(
@@ -38,8 +43,7 @@ struct MainView: View {
                 .animation(.easeInOut(duration: 0.22), value: model.statusState)
                 .animation(.easeInOut(duration: 0.22), value: model.activeMode)
             }
-            .navigationTitle("PolishPad")
-            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(.hidden, for: .navigationBar)
             .task {
                 model.refreshCapability()
             }
@@ -50,6 +54,27 @@ struct MainView: View {
                 Text("This removes the current draft and the polished result.")
             }
         }
+    }
+
+    // MARK: - Brand
+
+    private var brandHeader: some View {
+        VStack(spacing: 4) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 28, weight: .light))
+                .foregroundStyle(Color.ppAccentSoft)
+                .accessibilityHidden(true)
+
+            Text("PolishPad")
+                .font(.system(size: 42, weight: .regular, design: .serif))
+                .foregroundStyle(Color.ppText)
+                .lineLimit(1)
+                .minimumScaleFactor(0.78)
+                .accessibilityAddTraits(.isHeader)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 2)
+        .padding(.bottom, 4)
     }
 
     // MARK: - Status rail visibility
@@ -68,13 +93,13 @@ struct MainView: View {
     private func bottomRegion(for width: CGFloat) -> some View {
         VStack(spacing: 0) {
             toastArea
-            actionDock
+            actionDock(for: width)
                 .padding(.horizontal, horizontalPadding(for: width))
-                .padding(.top, 12)
-                .padding(.bottom, 8)
+                .padding(.top, 10)
+                .padding(.bottom, 12)
                 .frame(maxWidth: 1_560)
                 .frame(maxWidth: .infinity)
-                .background(dockBackground)
+                .background(Color.ppBackground.opacity(0.94).ignoresSafeArea(edges: .bottom))
         }
     }
 
@@ -82,77 +107,66 @@ struct MainView: View {
     private var toastArea: some View {
         if case .copied = model.statusState {
             CopiedToastView()
-                .padding(.bottom, 12)
+                .padding(.bottom, 10)
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
         }
     }
 
-    private var dockBackground: some View {
-        ZStack(alignment: .top) {
-            Rectangle()
-                .fill(.regularMaterial)
-            Rectangle()
-                .fill(Color(.separator).opacity(0.6))
-                .frame(height: 0.5)
-        }
-        .ignoresSafeArea(edges: .bottom)
-    }
-
     // MARK: - Dock rows
 
-    private var actionDock: some View {
-        VStack(spacing: 10) {
-            primaryRow
-            secondaryRow
+    private func actionDock(for width: CGFloat) -> some View {
+        VStack(spacing: 16) {
+            primaryRow(for: width)
+            secondaryToolbar
         }
-    }
-
-    private var primaryRow: some View {
-        HStack(spacing: 10) {
-            ForEach(PolishMode.allCases) { mode in
-                PrimaryPolishButton(
-                    title: mode.dockTitle,
-                    isActive: model.activeMode == mode,
-                    isAnyActive: model.activeMode != nil,
-                    isEnabled: model.canPolish,
-                    onTap: { model.polish(as: mode) },
-                    onCancel: { model.cancelPolish() }
-                )
-            }
-        }
-    }
-
-    private var secondaryRow: some View {
-        HStack(spacing: 10) {
-            UtilityButton(
-                title: "Undo",
-                isEnabled: model.canUndo,
-                action: { model.undo() }
-            )
-            UtilityButton(
-                title: "Copy",
-                isEnabled: model.canCopy,
-                action: { model.copyOutput() }
-            )
-            shareControl
-            UtilityButton(
-                title: "Clear",
-                isEnabled: model.canClear,
-                action: { model.showClearConfirmation = true }
-            )
-        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(Color.ppCanvas.opacity(0.74))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(Color.ppBorder, lineWidth: 1)
+        )
+        .shadow(color: Color.ppWarmShadow.opacity(0.06), radius: 18, y: 8)
     }
 
     @ViewBuilder
-    private var shareControl: some View {
-        if let payload = model.sharePayload {
-            ShareLink(item: payload.text, subject: Text(payload.subject)) {
-                UtilityButtonLabel(title: "Share", isEnabled: true)
+    private func primaryRow(for width: CGFloat) -> some View {
+        if width < 760 {
+            VStack(spacing: 12) {
+                primaryButtons
             }
-            .buttonStyle(.plain)
         } else {
-            UtilityButton(title: "Share", isEnabled: false, action: {})
+            HStack(spacing: PolishPadLayout.horizontalSpacing) {
+                primaryButtons
+            }
         }
+    }
+
+    private var primaryButtons: some View {
+        ForEach(PolishMode.allCases) { mode in
+            PrimaryPolishButton(
+                mode: mode,
+                isActive: model.activeMode == mode,
+                isAnyActive: model.activeMode != nil,
+                isEnabled: model.canPolish,
+                onTap: { model.polish(as: mode) },
+                onCancel: { model.cancelPolish() }
+            )
+        }
+    }
+
+    private var secondaryToolbar: some View {
+        SecondaryActionToolbar(
+            canUndo: model.canUndo,
+            canCopy: model.canCopy,
+            canClear: model.canClear,
+            sharePayload: model.sharePayload,
+            undo: { model.undo() },
+            copy: { model.copyOutput() },
+            clear: { model.showClearConfirmation = true }
+        )
     }
 
     // MARK: - Layout helpers
@@ -167,27 +181,13 @@ struct MainView: View {
             44
         }
     }
+
+    private func editorMinHeight(for size: CGSize) -> CGFloat {
+        let reservedHeight: CGFloat = size.width < 760 ? 560 : 500
+        return max(size.height - reservedHeight, size.width < 760 ? 360 : 500)
+    }
 }
 
 #Preview {
     MainView(model: PolishWorkflowModel())
-}
-
-extension Color {
-    /// Warm near-white window background. Provides subtle brand warmth
-    /// without returning to the retired "paper" metaphor.
-    static let polishPadWindow = Color(red: 0.965, green: 0.960, blue: 0.945)
-
-    /// The single accent color. Used ONLY on the active polish button fill
-    /// and on focus rings. Not on utility actions. Not on icons.
-    static let polishPadAccent = Color(red: 0.76, green: 0.40, blue: 0.22)
-
-    /// Warm-neutral button border — visible on the cream window at 1–1.5pt
-    /// without requiring high saturation. Calibrated for users who benefit
-    /// from clearly defined button edges.
-    static let polishPadBorder = Color(red: 0.47, green: 0.43, blue: 0.38).opacity(0.28)
-
-    /// Opaque warm off-white used as the button surface color. Contrasts
-    /// clearly with the window background so buttons read as raised panels.
-    static let polishPadButtonSurface = Color(red: 0.998, green: 0.995, blue: 0.985)
 }

@@ -14,6 +14,7 @@
 		5EC70099774D9BA757929BF7 /* PolishEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D2D0EA61173F1D682FF74D /* PolishEngine.swift */; };
 		605A5AC8EEBB523BA94876CF /* PolishMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639036E044217DBD5C6F1D1 /* PolishMode.swift */; };
 		664FE09FB3BFAF249E269A09 /* ModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2ACFCD28E28A3F472760012 /* ModeButton.swift */; };
+		6E8C17F880C7A06D92F61C8E /* PolishPadTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B4B0F04C6D0E75226A4C75 /* PolishPadTheme.swift */; };
 		739A06F2EA24C8F8A05B19F7 /* PolishPromptBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F83E8CC1D6BF61940939C /* PolishPromptBuilder.swift */; };
 		8A8A9D763B855FD30E7628BD /* RuleBasedPolisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0BF2C9637033E8F0905955 /* RuleBasedPolisherTests.swift */; };
 		8D3359F1677CF02564B716D6 /* RuleBasedPolisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB0C7010260E32F5585C582 /* RuleBasedPolisher.swift */; };
@@ -48,6 +49,7 @@
 		CDAF8D967AE0D7B04EB14120 /* PolishRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishRequest.swift; sourceTree = "<group>"; };
 		D2ACFCD28E28A3F472760012 /* ModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeButton.swift; sourceTree = "<group>"; };
 		DDCBA1C5E8DA36249F820878 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		E8B4B0F04C6D0E75226A4C75 /* PolishPadTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishPadTheme.swift; sourceTree = "<group>"; };
 		F21D2AF98A725E06728159AC /* EditorCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorCard.swift; sourceTree = "<group>"; };
 		F2A5F58228F2BF3AB91B6669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FF6D6D5C3C3E8E98BEB428BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -77,6 +79,7 @@
 				F21D2AF98A725E06728159AC /* EditorCard.swift */,
 				DDCBA1C5E8DA36249F820878 /* MainView.swift */,
 				D2ACFCD28E28A3F472760012 /* ModeButton.swift */,
+				E8B4B0F04C6D0E75226A4C75 /* PolishPadTheme.swift */,
 				1D80FBC2920DD0321615A26D /* StatusBanner.swift */,
 			);
 			path = Views;
@@ -221,6 +224,7 @@
 				F0305E8F70BA072FB7DCBF2B /* FoundationModelPolisher.swift in Sources */,
 				3BB31940F3BA18BF2219C0C5 /* MainView.swift in Sources */,
 				664FE09FB3BFAF249E269A09 /* ModeButton.swift in Sources */,
+				6E8C17F880C7A06D92F61C8E /* PolishPadTheme.swift in Sources */,
 				5EC70099774D9BA757929BF7 /* PolishEngine.swift in Sources */,
 				605A5AC8EEBB523BA94876CF /* PolishMode.swift in Sources */,
 				739A06F2EA24C8F8A05B19F7 /* PolishPromptBuilder.swift in Sources */,
