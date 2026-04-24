@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		06B16429782B0A30B9D895B7 /* PolishPad2App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4866CBBFBCE89A9C2464E4D9 /* PolishPad2App.swift */; };
-		3BB31940F3BA18BF2219C0C5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCBA1C5E8DA36249F820878 /* MainView.swift */; };
+			06B16429782B0A30B9D895B7 /* PolishPad2App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4866CBBFBCE89A9C2464E4D9 /* PolishPad2App.swift */; };
+			1761CBDF62D2475FA3C5C019 /* AboutSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1761CBDE62D2475FA3C5C019 /* AboutSheet.swift */; };
+			3BB31940F3BA18BF2219C0C5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCBA1C5E8DA36249F820878 /* MainView.swift */; };
 		4BD1EE52696EEA508EB153C1 /* EditorCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21D2AF98A725E06728159AC /* EditorCard.swift */; };
 		5514F2607100DC449C46D8C2 /* PolishRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDAF8D967AE0D7B04EB14120 /* PolishRequest.swift */; };
 		5EC70099774D9BA757929BF7 /* PolishEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D2D0EA61173F1D682FF74D /* PolishEngine.swift */; };
@@ -35,7 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1D80FBC2920DD0321615A26D /* StatusBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBanner.swift; sourceTree = "<group>"; };
+			1761CBDE62D2475FA3C5C019 /* AboutSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSheet.swift; sourceTree = "<group>"; };
+			1D80FBC2920DD0321615A26D /* StatusBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBanner.swift; sourceTree = "<group>"; };
 		0A8F83E8CC1D6BF61940939C /* PolishPromptBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishPromptBuilder.swift; sourceTree = "<group>"; };
 		2A0BF2C9637033E8F0905955 /* RuleBasedPolisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleBasedPolisherTests.swift; sourceTree = "<group>"; };
 		3BC57A0E4F1E7870A508196F /* PolishPad2.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PolishPad2.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,11 +75,12 @@
 			path = AppModel;
 			sourceTree = "<group>";
 		};
-		579EF31CE42194CF321FE88C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				F21D2AF98A725E06728159AC /* EditorCard.swift */,
-				DDCBA1C5E8DA36249F820878 /* MainView.swift */,
+			579EF31CE42194CF321FE88C /* Views */ = {
+				isa = PBXGroup;
+				children = (
+					1761CBDE62D2475FA3C5C019 /* AboutSheet.swift */,
+					F21D2AF98A725E06728159AC /* EditorCard.swift */,
+					DDCBA1C5E8DA36249F820878 /* MainView.swift */,
 				D2ACFCD28E28A3F472760012 /* ModeButton.swift */,
 				E8B4B0F04C6D0E75226A4C75 /* PolishPadTheme.swift */,
 				1D80FBC2920DD0321615A26D /* StatusBanner.swift */,
@@ -216,11 +219,12 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3955FE4BF140C23F79A944C6 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4BD1EE52696EEA508EB153C1 /* EditorCard.swift in Sources */,
+			3955FE4BF140C23F79A944C6 /* Sources */ = {
+				isa = PBXSourcesBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+					1761CBDF62D2475FA3C5C019 /* AboutSheet.swift in Sources */,
+					4BD1EE52696EEA508EB153C1 /* EditorCard.swift in Sources */,
 				F0305E8F70BA072FB7DCBF2B /* FoundationModelPolisher.swift in Sources */,
 				3BB31940F3BA18BF2219C0C5 /* MainView.swift in Sources */,
 				664FE09FB3BFAF249E269A09 /* ModeButton.swift in Sources */,

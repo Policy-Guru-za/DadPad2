@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainView: View {
     @Bindable var model: PolishWorkflowModel
+    @State private var showAboutSheet = false
     @FocusState private var editorIsFocused: Bool
 
     var body: some View {
@@ -32,7 +33,7 @@ struct MainView: View {
                     if let status = visibleStatus {
                         StatusRailView(
                             status: status,
-                            onRetry: model.canUndo ? { model.undo() } : nil
+                            onRetry: model.canRetryPolish ? { model.retryLastPolish() } : nil
                         )
                         .transition(.move(edge: .top).combined(with: .opacity))
                     }
@@ -53,26 +54,50 @@ struct MainView: View {
             } message: {
                 Text("This removes the current draft and the polished result.")
             }
+            .sheet(isPresented: $showAboutSheet) {
+                AboutSheet()
+                    .presentationDetents([.height(600), .large])
+            }
         }
     }
 
     // MARK: - Brand
 
     private var brandHeader: some View {
-        VStack(spacing: 4) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 28, weight: .light))
-                .foregroundStyle(Color.ppAccentSoft)
-                .accessibilityHidden(true)
+        ZStack(alignment: .topTrailing) {
+            VStack(spacing: 4) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 28, weight: .light))
+                    .foregroundStyle(Color.ppAccentSoft)
+                    .accessibilityHidden(true)
 
-            Text("PolishPad")
-                .font(.system(size: 42, weight: .regular, design: .serif))
-                .foregroundStyle(Color.ppText)
-                .lineLimit(1)
-                .minimumScaleFactor(0.78)
-                .accessibilityAddTraits(.isHeader)
+                Text("PolishPad")
+                    .font(.system(size: 42, weight: .regular, design: .serif))
+                    .foregroundStyle(Color.ppText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.78)
+                    .accessibilityAddTraits(.isHeader)
+            }
+            .frame(maxWidth: .infinity)
+
+            Button {
+                showAboutSheet = true
+            } label: {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 22, weight: .regular))
+                    .foregroundStyle(Color.ppAccent)
+                    .frame(width: 44, height: 44)
+                    .background(Color.ppCanvas.opacity(0.88), in: Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.ppBorder, lineWidth: 1)
+                    )
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("About PolishPad")
+            .accessibilityHint("Shows privacy policy and support links.")
         }
-        .frame(maxWidth: .infinity)
         .padding(.top, 2)
         .padding(.bottom, 4)
     }

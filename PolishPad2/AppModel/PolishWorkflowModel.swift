@@ -108,6 +108,7 @@ final class PolishWorkflowModel {
     var copied = false
     var showClearConfirmation = false
     var errorMessage: String?
+    private(set) var failedMode: PolishMode?
 
     private let service: any PolishServicing
     private var currentRunID = UUID()
@@ -143,6 +144,10 @@ final class PolishWorkflowModel {
 
     var canUndo: Bool {
         !history.isEmpty
+    }
+
+    var canRetryPolish: Bool {
+        errorMessage != nil && failedMode != nil && !trimmedSourceText.isEmpty && !isProcessing
     }
 
     var statusState: WorkflowStatusState {
@@ -207,6 +212,7 @@ final class PolishWorkflowModel {
         isProcessing = true
         activeMode = mode
         errorMessage = nil
+        failedMode = nil
         copied = false
 
         let request = PolishRequest(
@@ -256,6 +262,7 @@ final class PolishWorkflowModel {
 
                     self.refreshCapability()
                     self.errorMessage = error.errorDescription
+                    self.failedMode = mode
                     self.isProcessing = false
                     self.activeMode = nil
                     self.generationTask = nil
@@ -268,6 +275,7 @@ final class PolishWorkflowModel {
 
                     self.refreshCapability()
                     self.errorMessage = "PolishPad couldn’t finish this rewrite on device."
+                    self.failedMode = mode
                     self.isProcessing = false
                     self.activeMode = nil
                     self.generationTask = nil
@@ -287,6 +295,15 @@ final class PolishWorkflowModel {
         isProcessing = false
         activeMode = nil
         errorMessage = nil
+        failedMode = nil
+    }
+
+    func retryLastPolish() {
+        guard canRetryPolish, let failedMode else {
+            return
+        }
+
+        polish(as: failedMode)
     }
 
     func copyOutput() {
@@ -328,6 +345,7 @@ final class PolishWorkflowModel {
         isProcessing = false
         activeMode = nil
         errorMessage = nil
+        failedMode = nil
         refreshCapability()
     }
 
@@ -351,6 +369,7 @@ final class PolishWorkflowModel {
         activeMode = nil
         lastCompletedMode = nil
         errorMessage = nil
+        failedMode = nil
 
         refreshCapability()
     }

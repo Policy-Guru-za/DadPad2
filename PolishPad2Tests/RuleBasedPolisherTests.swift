@@ -318,6 +318,29 @@ final class PolishWorkflowModelTests: XCTestCase {
         XCTAssertFalse(model.canCancel)
     }
 
+    func testRetryRepeatsFailedModeWithCurrentDraft() async {
+        let service = RetryPolishService()
+        let model = PolishWorkflowModel(service: service)
+
+        model.sourceText = "rough text"
+        model.polish(as: .email)
+        await settle()
+
+        XCTAssertEqual(model.errorMessage, "Temporary error.")
+        XCTAssertEqual(model.failedMode, .email)
+        XCTAssertTrue(model.canRetryPolish)
+
+        model.retryLastPolish()
+        await settle()
+
+        XCTAssertNil(model.errorMessage)
+        XCTAssertNil(model.failedMode)
+        XCTAssertFalse(model.canRetryPolish)
+        XCTAssertEqual(model.polishedText, "Retried email.")
+        XCTAssertEqual(model.lastCompletedMode, .email)
+        XCTAssertEqual(service.attempts, 2)
+    }
+
     func testSharePayloadOnlyExistsWhenOutputExists() {
         let model = PolishWorkflowModel(service: MockPolishService())
 
@@ -357,5 +380,26 @@ private struct MockPolishService: PolishServicing {
 
     func polish(_ request: PolishRequest) async throws -> PolishResponse {
         try await polishHandler(request)
+    }
+}
+
+private final class RetryPolishService: PolishServicing, @unchecked Sendable {
+    var attempts = 0
+
+    func capability(for locale: Locale) -> PolishCapability {
+        .foundationModel
+    }
+
+    func polish(_ request: PolishRequest) async throws -> PolishResponse {
+        attempts += 1
+
+        if attempts == 1 {
+            throw PolishEngineError.processingFailed("Temporary error.")
+        }
+
+        return PolishResponse(
+            text: "Retried \(request.mode.shortTitle.lowercased()).",
+            capability: .foundationModel
+        )
     }
 }

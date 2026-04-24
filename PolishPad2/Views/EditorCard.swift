@@ -137,14 +137,17 @@ struct EditorialEditorCanvasView: View {
                     )
                     .shadow(color: Color.ppWarmShadow.opacity(0.06), radius: 12, y: 5)
 
-                Image(systemName: "mic")
-                    .font(.system(size: 40, weight: .light))
+                Image(systemName: "hand.tap")
+                    .font(.system(size: 38, weight: .light))
                     .foregroundStyle(Color.ppAccent)
             }
-            Text("Start typing, or tap the mic to dictate.")
+            Text("Tap here to begin typing or dictating. To dictate, tap the microphone icon that you will see.")
                 .font(.system(size: 17, weight: .regular))
                 .foregroundStyle(Color.ppSecondaryText)
                 .multilineTextAlignment(.center)
+                .lineSpacing(3)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: 520)
                 .padding(.horizontal, 24)
             Spacer(minLength: 0)
         }
