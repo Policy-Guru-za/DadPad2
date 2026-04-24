@@ -56,7 +56,7 @@ enum PolishMode: String, CaseIterable, Identifiable, Sendable {
         case .note:
             "Clear structure. Natural paragraphs or bullets only when useful."
         case .email:
-            "Professional email with a sensible greeting and closing."
+            "Professional email tone without invented subject lines or sign-offs."
         case .message:
             "Shorter, warmer, and more conversational than an email."
         }
@@ -70,36 +70,6 @@ enum PolishMode: String, CaseIterable, Identifiable, Sendable {
             "Polished email"
         case .message:
             "Polished message"
-        }
-    }
-
-    var foundationInstructions: String {
-        switch self {
-        case .note:
-            """
-            Rewrite the text as a clear, well-structured note.
-            Improve grammar, spelling, punctuation, and sentence flow.
-            Use paragraphs or bullets only when they genuinely improve readability.
-            Preserve the original meaning and avoid becoming overly formal.
-            """
-        case .email:
-            """
-            Rewrite the text as a properly formatted email.
-            Improve grammar, spelling, punctuation, and paragraph structure.
-            Add a neutral salutation only when it helps, and never invent names.
-            Add a simple natural closing only when it improves usefulness.
-            Keep the tone professional and clear by default.
-            Do not invent names, dates, promises, or facts.
-            Do not generate a subject line unless the input clearly contains one.
-            """
-        case .message:
-            """
-            Rewrite the text as a concise message.
-            Improve grammar, spelling, punctuation, and clarity.
-            Keep it natural, human, and more conversational than an email.
-            Keep it shorter when possible without losing meaning.
-            Do not add unnecessary formality.
-            """
         }
     }
 }

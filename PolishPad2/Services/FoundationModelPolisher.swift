@@ -42,11 +42,11 @@ struct FoundationModelPolisher: Sendable {
     func polish(_ request: PolishRequest) async throws -> PolishResponse {
         let session = LanguageModelSession(
             model: model,
-            instructions: systemInstructions(for: request.mode)
+            instructions: PolishPromptBuilder.instructions(for: request)
         )
 
         let response = try await session.respond(
-            to: prompt(for: request),
+            to: PolishPromptBuilder.userInput(for: request),
             generating: PolishedTextPayload.self,
             options: generationOptions(for: request.input)
         )
@@ -60,28 +60,6 @@ struct FoundationModelPolisher: Sendable {
         }
 
         return PolishResponse(text: sanitized, capability: .foundationModel)
-    }
-
-    private func systemInstructions(for mode: PolishMode) -> String {
-        """
-        You rewrite rough dictated or typed text for a calm, private, on-device iPad writing utility.
-        Preserve the writer’s intent.
-        Correct grammar, spelling, punctuation, and paragraphing.
-        Improve readability without becoming verbose.
-        Never invent facts, names, dates, promises, or explanations.
-        Return only the polished text.
-        If the input is already clean, make minimal changes.
-        \(mode.foundationInstructions)
-        """
-    }
-
-    private func prompt(for request: PolishRequest) -> String {
-        """
-        Rewrite this text as a \(request.mode.shortTitle.lowercased()).
-
-        Input:
-        \(request.input)
-        """
     }
 
     private func generationOptions(for input: String) -> GenerationOptions {

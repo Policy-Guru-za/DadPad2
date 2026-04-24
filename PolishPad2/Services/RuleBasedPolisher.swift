@@ -8,26 +8,10 @@ struct RuleBasedPolisher: Sendable {
         case .note:
             return body
         case .email:
-            return formatEmail(body: body)
+            return body
         case .message:
             return body
         }
-    }
-
-    private func formatEmail(body: String) -> String {
-        var sections: [String] = []
-
-        if !startsWithGreeting(body) {
-            sections.append("Hi,")
-        }
-
-        sections.append(body)
-
-        if !endsWithClosing(body) {
-            sections.append("Best,")
-        }
-
-        return sections.joined(separator: "\n\n")
     }
 
     private func normalizedBody(from input: String) -> String {
@@ -95,20 +79,6 @@ struct RuleBasedPolisher: Sendable {
         }
 
         return cleaned
-    }
-
-    private func startsWithGreeting(_ text: String) -> Bool {
-        text.range(
-            of: #"^(hi|hello)\b|^dear\b"#,
-            options: [.regularExpression, .caseInsensitive]
-        ) != nil
-    }
-
-    private func endsWithClosing(_ text: String) -> Bool {
-        let lowercased = text.lowercased()
-        return lowercased.contains("\n\nbest,")
-            || lowercased.contains("\n\nthanks,")
-            || lowercased.contains("\n\nregards,")
     }
 
     private func capitalizingFirstLetter(_ value: String) -> String {
