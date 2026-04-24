@@ -6,7 +6,7 @@ PolishPad is a private iPad writing utility that helps users turn rough typed or
 
 For support, contact:
 
-[INSERT SUPPORT EMAIL]
+support@redcliffebay.com
 
 Please include:
 - your iPad model, if known

@@ -49,8 +49,8 @@ Do not claim App Store accessibility support fields until verified on device or 
 
 - Publish `docs/AppStore/PRIVACY_POLICY.md` at `https://redcliffebay.com/polishpad/privacy`.
 - Publish `docs/AppStore/SUPPORT.md` at `https://redcliffebay.com/polishpad/support`.
-- Replace `[INSERT DATE]` and `[INSERT SUPPORT EMAIL]` before publishing.
-- Confirm `support@redcliffebay.com` exists or update `PolishPad2/Views/AboutSheet.swift` to the final support email.
+- Confirm the privacy policy effective date is still correct on the day it is published.
+- Confirm `support@redcliffebay.com` exists and is monitored before submission.
 - Confirm app icon renders in the built app and archive validation has no icon warnings.
 - Capture accurate iPad screenshots from the final build.
 - Confirm App Privacy details match the final shipped architecture.

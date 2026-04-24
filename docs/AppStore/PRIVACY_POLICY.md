@@ -1,6 +1,6 @@
 # PolishPad Privacy Policy
 
-Effective date: [INSERT DATE]
+Effective date: 24 April 2026
 
 PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages.
 
@@ -86,4 +86,4 @@ If we make material changes, we will update the effective date above.
 
 If you have questions about this Privacy Policy or PolishPad, contact us at:
 
-[INSERT SUPPORT EMAIL]
+support@redcliffebay.com
