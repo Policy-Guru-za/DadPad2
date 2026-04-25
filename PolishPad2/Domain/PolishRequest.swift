@@ -8,22 +8,22 @@ struct PolishRequest: Sendable {
 
 enum PolishCapability: Sendable, Equatable {
     case foundationModel
-    case basicFormatter(reason: String)
+    case unavailable(reason: String)
 
-    var usesFoundationModel: Bool {
+    var isAvailableForPolish: Bool {
         switch self {
         case .foundationModel:
             true
-        case .basicFormatter:
+        case .unavailable:
             false
         }
     }
 
-    var fallbackReason: String? {
+    var unavailableReason: String? {
         switch self {
         case .foundationModel:
             nil
-        case let .basicFormatter(reason):
+        case let .unavailable(reason):
             reason
         }
     }
@@ -32,8 +32,8 @@ enum PolishCapability: Sendable, Equatable {
         switch self {
         case .foundationModel:
             "On-device AI"
-        case .basicFormatter:
-            "Basic local"
+        case .unavailable:
+            "Requires Apple Intelligence"
         }
     }
 }
@@ -47,6 +47,7 @@ enum PolishEngineError: LocalizedError, Sendable {
     case inputTooLong
     case unsupportedContent
     case currentlyBusy
+    case unavailable(String)
     case processingFailed(String)
 
     var errorDescription: String? {
@@ -57,6 +58,8 @@ enum PolishEngineError: LocalizedError, Sendable {
             "This text could not be rewritten safely with the on-device model."
         case .currentlyBusy:
             "PolishPad is still finishing another request. Try again in a moment."
+        case let .unavailable(message):
+            message
         case let .processingFailed(message):
             message
         }

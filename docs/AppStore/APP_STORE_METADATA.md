@@ -23,20 +23,22 @@ Do not add subscriptions yet.
 ## Description
 
 ```text
-PolishPad is a simple private writing utility for iPad.
+PolishPad is a simple private writing utility for Apple Intelligence-compatible iPads.
 
 Type or dictate rough text, then turn it into a clearer note, email, or text message with one tap.
 
-PolishPad is designed to be calm, focused, and easy to use. It helps improve grammar, spelling, structure, and readability while keeping the original meaning of your words.
+PolishPad uses Apple Intelligence on device to help improve grammar, spelling, structure, and readability while keeping the original meaning of your words.
 
 Features:
 • Draft text by typing or using standard iPad dictation
-• Polish text as a note, email, or text message
+• Polish text as a note, email, or text message using on-device Apple Intelligence
 • Switch between Draft and Result
 • Copy or share the result when ready
 • Undo or clear text when needed
 • Clean, uncluttered iPad-first design
 • No account required
+
+Requires Apple Intelligence on a compatible iPad.
 
 PolishPad is a writing utility. It is not a medical, legal, financial, or professional advice app. Always review your text before sending or sharing it.
 ```
@@ -105,7 +107,7 @@ Only claim a feature if all common tasks can be completed with it.
 ## App Review Notes
 
 ```text
-PolishPad is an iPad-first writing utility.
+PolishPad is an iPad-first writing utility that requires Apple Intelligence on a compatible iPad.
 
 No account, login, backend, subscription, or demo credentials are required.
 
@@ -113,11 +115,11 @@ To test:
 1. Open the app.
 2. Tap into the Draft writing area.
 3. Type text, or use the standard iPad keyboard dictation microphone.
-4. Tap “Polish for note”, “Polish for email”, or “Polish for text”.
+4. On an Apple Intelligence-compatible iPad with Apple Intelligence enabled and ready, tap “Polish for note”, “Polish for email”, or “Polish for text”.
 5. Switch between Draft and Result.
 6. Test Copy, Share, Undo, and Clear.
 
-PolishPad is designed to process text on device using Apple system capabilities where available. If on-device model functionality is unavailable on the review device, the app should provide a graceful unavailable or local fallback state rather than requiring an account or external service.
+PolishPad processes text on device using Apple’s Foundation Models framework. If Apple Intelligence is unavailable, disabled, still downloading, language unsupported, or the device is not eligible, the app shows a clear unavailable state and does not create a lower-quality fallback rewrite.
 
 PolishPad is a writing utility and is not intended to provide medical, legal, financial, or professional advice.
 ```

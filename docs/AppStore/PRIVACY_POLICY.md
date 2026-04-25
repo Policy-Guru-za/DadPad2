@@ -2,7 +2,7 @@
 
 Effective date: 24 April 2026
 
-PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages.
+PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages using on-device Apple Intelligence.
 
 This Privacy Policy explains how PolishPad handles information.
 
@@ -30,9 +30,9 @@ PolishPad does not sell or share your draft text or polished output.
 
 ## On-Device Processing
 
-PolishPad is designed to process text on device using Apple system capabilities where available.
+PolishPad is designed to process text on device using Apple Intelligence on compatible iPads.
 
-If Apple’s on-device language model features are not available on your iPad, PolishPad may provide a basic local fallback so the app remains usable.
+If Apple Intelligence is not available, enabled, downloaded, language-supported, and ready on your iPad, PolishPad does not send your text to a cloud service or provide a lower-quality fallback rewrite.
 
 ## Dictation
 

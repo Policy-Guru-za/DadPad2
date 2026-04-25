@@ -1,76 +1,6 @@
 import XCTest
 @testable import PolishPad
 
-final class RuleBasedPolisherTests: XCTestCase {
-    private let polisher = RuleBasedPolisher()
-
-    func testEmailDoesNotInventGreetingOrClosing() {
-        let output = polisher.polish(
-            PolishRequest(
-                input: "can we move tomorrow's meeting to friday afternoon",
-                mode: .email,
-                locale: Locale(identifier: "en_ZA")
-            )
-        )
-
-        XCTAssertEqual(output, "Can we move tomorrow's meeting to friday afternoon.")
-        XCTAssertFalse(output.contains("Hi,"))
-        XCTAssertFalse(output.contains("Best,"))
-    }
-
-    func testEmailPreservesExistingAddressedGreetingWithoutAddingClosing() {
-        let output = polisher.polish(
-            PolishRequest(
-                input: "Hi Ryan,\ncan we move tomorrow's meeting to friday afternoon",
-                mode: .email,
-                locale: Locale(identifier: "en_ZA")
-            )
-        )
-
-        XCTAssertFalse(output.hasPrefix("Hi,\n\nHi Ryan,"))
-        XCTAssertTrue(output.hasPrefix("Hi Ryan,"))
-        XCTAssertFalse(output.hasSuffix("Best,"))
-    }
-
-    func testMessageStaysCompact() {
-        let output = polisher.polish(
-            PolishRequest(
-                input: "running 10 mins late see you soon",
-                mode: .message,
-                locale: Locale(identifier: "en_ZA")
-            )
-        )
-
-        XCTAssertEqual(output, "Running 10 mins late see you soon.")
-        XCTAssertFalse(output.contains("Hi,"))
-        XCTAssertFalse(output.contains("Best,"))
-    }
-
-    func testNoteNormalizesBulletLists() {
-        let output = polisher.polish(
-            PolishRequest(
-                input: "- call the pharmacy\n- book physio",
-                mode: .note,
-                locale: Locale(identifier: "en_ZA")
-            )
-        )
-
-        XCTAssertEqual(output, "• Call the pharmacy.\n• Book physio.")
-    }
-
-    func testNotePreservesNumberedLists() {
-        let output = polisher.polish(
-            PolishRequest(
-                input: "1. call the pharmacy\n2. book physio",
-                mode: .note,
-                locale: Locale(identifier: "en_ZA")
-            )
-        )
-
-        XCTAssertEqual(output, "• Call the pharmacy.\n• Book physio.")
-    }
-}
-
 final class PolishPromptBuilderTests: XCTestCase {
     func testNoteInstructionsUseDadPadRefineContract() {
         let request = PolishRequest(
@@ -200,6 +130,34 @@ final class PolishPromptBuilderTests: XCTestCase {
 
 @MainActor
 final class PolishWorkflowModelTests: XCTestCase {
+    func testUnavailableCapabilityDisablesPolishingAndShowsRequirement() {
+        let reason = "PolishPad requires Apple Intelligence."
+        let model = PolishWorkflowModel(
+            service: MockPolishService(capability: .unavailable(reason: reason))
+        )
+
+        model.sourceText = "rough text"
+
+        XCTAssertFalse(model.canPolish)
+        XCTAssertEqual(model.statusState, .unavailable(reason))
+        XCTAssertEqual(model.capability.outputBadgeText, "Requires Apple Intelligence")
+    }
+
+    func testDirectPolishDoesNotCallServiceWhenUnavailable() async {
+        let service = UnavailableCountingService()
+        let model = PolishWorkflowModel(service: service)
+
+        model.sourceText = "rough text"
+        model.polish(as: .note)
+        await settle()
+
+        XCTAssertEqual(service.polishCalls, 0)
+        XCTAssertEqual(model.polishedText, "")
+        XCTAssertNil(model.lastCompletedMode)
+        XCTAssertFalse(model.isProcessing)
+        XCTAssertFalse(model.canUndo)
+    }
+
     func testCancelStopsProcessingWithoutDroppingText() async {
         let model = PolishWorkflowModel(
             service: MockPolishService { request in
@@ -266,6 +224,25 @@ final class PolishWorkflowModelTests: XCTestCase {
         XCTAssertEqual(model.polishedText, "Cleaned up.")
         XCTAssertEqual(model.selectedSurface, .result)
         XCTAssertEqual(model.lastCompletedMode, .email)
+    }
+
+    func testUnavailablePolishErrorDoesNotProduceOutput() async {
+        let model = PolishWorkflowModel(
+            service: MockPolishService { _ in
+                throw PolishEngineError.unavailable("Apple Intelligence is unavailable right now.")
+            }
+        )
+
+        model.sourceText = "rough text"
+        model.polishedText = "Existing result."
+
+        model.polish(as: .email)
+        await settle()
+
+        XCTAssertEqual(model.errorMessage, "Apple Intelligence is unavailable right now.")
+        XCTAssertEqual(model.failedMode, .email)
+        XCTAssertEqual(model.polishedText, "Existing result.")
+        XCTAssertNil(model.lastCompletedMode)
     }
 
     func testPolishAutoSwitchesToResult() async {
@@ -401,5 +378,19 @@ private final class RetryPolishService: PolishServicing, @unchecked Sendable {
             text: "Retried \(request.mode.shortTitle.lowercased()).",
             capability: .foundationModel
         )
+    }
+}
+
+private final class UnavailableCountingService: PolishServicing, @unchecked Sendable {
+    private let reason = "PolishPad requires Apple Intelligence."
+    var polishCalls = 0
+
+    func capability(for locale: Locale) -> PolishCapability {
+        .unavailable(reason: reason)
+    }
+
+    func polish(_ request: PolishRequest) async throws -> PolishResponse {
+        polishCalls += 1
+        throw PolishEngineError.unavailable(reason)
     }
 }

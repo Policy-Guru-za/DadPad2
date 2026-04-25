@@ -2,7 +2,7 @@
 
 ## Positioning
 
-PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages.
+PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages using on-device Apple Intelligence.
 
 Do not describe PolishPad as stroke, rehabilitation, therapy, clinical, medical device, patient treatment, diagnosis, recovery, or aphasia treatment software.
 
@@ -22,9 +22,9 @@ Public page source drafts:
 
 ## App Review Notes Draft
 
-PolishPad is an iPad-first writing utility. A user enters text manually or by using standard iPad keyboard dictation, then taps Note, Email, or Text to rewrite the draft into editable output.
+PolishPad is an iPad-first writing utility for Apple Intelligence-compatible iPads. A user enters text manually or by using standard iPad keyboard dictation, then taps Note, Email, or Text to rewrite the draft into editable output.
 
-No account, login, backend, demo credentials, subscription, or external service is required. The app uses Apple's on-device Foundation Models framework when available. If the on-device model is unavailable, the app falls back to a basic local formatter so the app remains usable.
+No account, login, backend, demo credentials, subscription, or external service is required. The app uses Apple's on-device Foundation Models framework and requires Apple Intelligence to be enabled, downloaded, language-supported, and available on the review device.
 
 Suggested review flow:
 
@@ -33,13 +33,15 @@ Suggested review flow:
 3. Switch between Draft and Result.
 4. Edit the result if desired.
 5. Test Copy, Share, Undo, Retry on an error state, and Clear.
-6. If testing without on-device model availability, confirm the fallback banner and basic local output.
+6. If testing without on-device model availability, confirm the unavailable banner and disabled polish actions.
+
+Compatibility note: `UIRequiredDeviceCapabilities` uses `ipad-minimum-performance-m1`, verified on Apple's Required Device Capabilities page to include iPad mini (A17 Pro) and M1-or-later iPads. Runtime `SystemLanguageModel.availability` remains the source of truth for Apple Intelligence being enabled, downloaded, language-supported, region-available, and ready.
 
 ## App Privacy Label Direction
 
 Intended answer for the current shipped architecture: data is not collected by the developer.
 
-This depends on the app continuing to have no accounts, no backend, no analytics, no advertising, no third-party tracking, no crash logs containing user text, and no server-side AI. Legal review is required before final submission.
+This depends on the app continuing to have no accounts, no backend, no analytics, no advertising, no third-party tracking, no crash logs containing user text, and no server-side or third-party AI. Legal review is required before final submission.
 
 ## Accessibility Label Caution
 

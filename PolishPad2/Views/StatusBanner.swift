@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Slim inline status rail. Rendered ONLY for processing, fallback, and error states.
+/// Slim inline status rail. Rendered ONLY for processing, unavailable, and error states.
 /// Ready and copied states are handled elsewhere (copied appears as a transient toast).
 struct StatusRailView: View {
     let status: WorkflowStatusState
@@ -45,8 +45,8 @@ struct StatusRailView: View {
             ProgressView()
                 .controlSize(.small)
                 .tint(Color.ppAccent)
-        case .fallback:
-            Image(systemName: "bolt.slash")
+        case .unavailable:
+            Image(systemName: "sparkles")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(Color.ppSecondaryText)
         case .error:
@@ -62,7 +62,7 @@ struct StatusRailView: View {
         switch status {
         case let .processing(mode):
             "Polishing your \(mode.shortTitle.lowercased())…"
-        case let .fallback(reason):
+        case let .unavailable(reason):
             reason
         case let .error(message):
             message
@@ -75,7 +75,7 @@ struct StatusRailView: View {
         switch status {
         case .error:
             Color(.systemRed)
-        case .processing, .fallback, .ready, .copied:
+        case .processing, .unavailable, .ready, .copied:
             Color.ppSecondaryText
         }
     }

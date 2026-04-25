@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @Bindable var model: PolishWorkflowModel
     @State private var showAboutSheet = false
     @FocusState private var editorIsFocused: Bool
@@ -47,6 +48,11 @@ struct MainView: View {
             .toolbar(.hidden, for: .navigationBar)
             .task {
                 model.refreshCapability()
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .active {
+                    model.refreshCapability()
+                }
             }
             .alert("Clear draft and result?", isPresented: $model.showClearConfirmation) {
                 Button("Cancel", role: .cancel) {}
@@ -106,7 +112,7 @@ struct MainView: View {
 
     private var visibleStatus: WorkflowStatusState? {
         switch model.statusState {
-        case .processing, .fallback, .error:
+        case .processing, .unavailable, .error:
             return model.statusState
         case .ready, .copied:
             return nil

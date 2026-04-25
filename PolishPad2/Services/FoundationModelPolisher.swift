@@ -12,8 +12,8 @@ struct FoundationModelPolisher: Sendable {
 
     func capability(for locale: Locale) -> PolishCapability {
         guard model.supportsLocale(locale) else {
-            return .basicFormatter(
-                reason: "This device language is not currently supported by Apple’s on-device model. Using a basic local formatter instead."
+            return .unavailable(
+                reason: "PolishPad requires Apple Intelligence in a supported language. Change the device and Siri language to a supported language to polish text."
             )
         }
 
@@ -21,20 +21,20 @@ struct FoundationModelPolisher: Sendable {
         case .available:
             return .foundationModel
         case .unavailable(.deviceNotEligible):
-            return .basicFormatter(
-                reason: "Full polish needs Apple Intelligence on a supported iPad. Basic local formatting is still available."
+            return .unavailable(
+                reason: "PolishPad requires Apple Intelligence on a compatible iPad: iPad mini (A17 Pro) or an iPad with M1 or later."
             )
         case .unavailable(.appleIntelligenceNotEnabled):
-            return .basicFormatter(
-                reason: "Turn on Apple Intelligence in Settings for full polish. Basic local formatting remains available."
+            return .unavailable(
+                reason: "Turn on Apple Intelligence in Settings to polish text with PolishPad."
             )
         case .unavailable(.modelNotReady):
-            return .basicFormatter(
-                reason: "The on-device model is still getting ready. Using a basic local formatter for now."
+            return .unavailable(
+                reason: "Apple Intelligence is still getting ready. Keep the iPad on Wi-Fi and power, then try again after the model finishes downloading."
             )
         case .unavailable:
-            return .basicFormatter(
-                reason: "Full polish is unavailable right now. Using a basic local formatter instead."
+            return .unavailable(
+                reason: "Apple Intelligence is unavailable right now. PolishPad can polish text when the on-device model is available."
             )
         }
     }

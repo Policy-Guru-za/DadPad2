@@ -103,7 +103,7 @@ struct AboutSheet: View {
     }
 
     private var privacyNote: some View {
-        Text("Text processing is designed to happen on-device where available. If the on-device model is unavailable, PolishPad uses basic local formatting and does not require an account or backend.")
+        Text("Polishing happens on device with Apple Intelligence on a compatible iPad. PolishPad does not require an account, backend, or cloud AI service.")
             .font(.system(size: 14, weight: .regular))
             .foregroundStyle(Color.ppSecondaryText)
             .lineSpacing(3)

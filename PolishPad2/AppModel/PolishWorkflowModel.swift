@@ -40,7 +40,7 @@ enum EditorSurface: String, CaseIterable, Identifiable, Sendable {
 enum WorkflowStatusState: Equatable, Sendable {
     case ready(lastCompletedMode: PolishMode?)
     case processing(PolishMode)
-    case fallback(String)
+    case unavailable(String)
     case error(String)
     case copied
 
@@ -50,8 +50,8 @@ enum WorkflowStatusState: Equatable, Sendable {
             "STATUS"
         case .processing:
             "STATUS"
-        case .fallback:
-            "BASIC"
+        case .unavailable:
+            "REQUIRED"
         case .error:
             "ERROR"
         case .copied:
@@ -69,7 +69,7 @@ enum WorkflowStatusState: Equatable, Sendable {
             return "ready."
         case let .processing(mode):
             return "polishing as \(mode.shortTitle.lowercased())…"
-        case let .fallback(reason):
+        case let .unavailable(reason):
             return reason
         case let .error(message):
             return message
@@ -123,7 +123,7 @@ final class PolishWorkflowModel {
     }
 
     var canPolish: Bool {
-        !trimmedSourceText.isEmpty && !isProcessing
+        !trimmedSourceText.isEmpty && !isProcessing && capability.isAvailableForPolish
     }
 
     var canCopy: Bool {
@@ -147,7 +147,7 @@ final class PolishWorkflowModel {
     }
 
     var canRetryPolish: Bool {
-        errorMessage != nil && failedMode != nil && !trimmedSourceText.isEmpty && !isProcessing
+        errorMessage != nil && failedMode != nil && !trimmedSourceText.isEmpty && !isProcessing && capability.isAvailableForPolish
     }
 
     var statusState: WorkflowStatusState {
@@ -163,8 +163,8 @@ final class PolishWorkflowModel {
             return .processing(activeMode)
         }
 
-        if let fallbackReason = capability.fallbackReason {
-            return .fallback(fallbackReason)
+        if let unavailableReason = capability.unavailableReason {
+            return .unavailable(unavailableReason)
         }
 
         return .ready(lastCompletedMode: lastCompletedMode)
@@ -176,8 +176,7 @@ final class PolishWorkflowModel {
             return "Type or dictate rough wording. The original stays separate from the polished result."
         case .result:
             if let lastCompletedMode {
-                let engineLabel = capability.usesFoundationModel ? "on-device AI" : "basic local formatter"
-                return "Editable \(lastCompletedMode.shortTitle.lowercased()) output from \(engineLabel)."
+                return "Editable \(lastCompletedMode.shortTitle.lowercased()) output from on-device AI."
             }
 
             return "Choose Note, Email, or Message to generate polished text."
@@ -199,7 +198,7 @@ final class PolishWorkflowModel {
 
     func polish(as mode: PolishMode) {
         let snapshot = trimmedSourceText
-        guard !snapshot.isEmpty else {
+        guard canPolish else {
             return
         }
 

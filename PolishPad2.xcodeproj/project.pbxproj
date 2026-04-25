@@ -17,8 +17,7 @@
 		664FE09FB3BFAF249E269A09 /* ModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2ACFCD28E28A3F472760012 /* ModeButton.swift */; };
 		6E8C17F880C7A06D92F61C8E /* PolishPadTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8B4B0F04C6D0E75226A4C75 /* PolishPadTheme.swift */; };
 		739A06F2EA24C8F8A05B19F7 /* PolishPromptBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A8F83E8CC1D6BF61940939C /* PolishPromptBuilder.swift */; };
-		8A8A9D763B855FD30E7628BD /* RuleBasedPolisherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0BF2C9637033E8F0905955 /* RuleBasedPolisherTests.swift */; };
-		8D3359F1677CF02564B716D6 /* RuleBasedPolisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB0C7010260E32F5585C582 /* RuleBasedPolisher.swift */; };
+		8A8A9D763B855FD30E7628BD /* PolishWorkflowModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A0BF2C9637033E8F0905955 /* PolishWorkflowModelTests.swift */; };
 		BAF6180B74BF0A494215CFD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF6D6D5C3C3E8E98BEB428BB /* Assets.xcassets */; };
 		BFFAD77C3F4008245B15C55A /* PolishWorkflowModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 480FA0D56EDFD552F6862D25 /* PolishWorkflowModel.swift */; };
 		D098C0194121ADBEC6C098A0 /* StatusBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D80FBC2920DD0321615A26D /* StatusBanner.swift */; };
@@ -39,9 +38,8 @@
 			1761CBDE62D2475FA3C5C019 /* AboutSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSheet.swift; sourceTree = "<group>"; };
 			1D80FBC2920DD0321615A26D /* StatusBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBanner.swift; sourceTree = "<group>"; };
 		0A8F83E8CC1D6BF61940939C /* PolishPromptBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishPromptBuilder.swift; sourceTree = "<group>"; };
-		2A0BF2C9637033E8F0905955 /* RuleBasedPolisherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleBasedPolisherTests.swift; sourceTree = "<group>"; };
+		2A0BF2C9637033E8F0905955 /* PolishWorkflowModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishWorkflowModelTests.swift; sourceTree = "<group>"; };
 		3BC57A0E4F1E7870A508196F /* PolishPad2.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PolishPad2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DB0C7010260E32F5585C582 /* RuleBasedPolisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleBasedPolisher.swift; sourceTree = "<group>"; };
 		480FA0D56EDFD552F6862D25 /* PolishWorkflowModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishWorkflowModel.swift; sourceTree = "<group>"; };
 		4866CBBFBCE89A9C2464E4D9 /* PolishPad2App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishPad2App.swift; sourceTree = "<group>"; };
 		62D2D0EA61173F1D682FF74D /* PolishEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolishEngine.swift; sourceTree = "<group>"; };
@@ -105,7 +103,7 @@
 		9D69AA635BC10E3F41048500 /* PolishPad2Tests */ = {
 			isa = PBXGroup;
 			children = (
-				2A0BF2C9637033E8F0905955 /* RuleBasedPolisherTests.swift */,
+				2A0BF2C9637033E8F0905955 /* PolishWorkflowModelTests.swift */,
 			);
 			path = PolishPad2Tests;
 			sourceTree = "<group>";
@@ -125,7 +123,6 @@
 				74E174A07D2145B98806E113 /* FoundationModelPolisher.swift */,
 				62D2D0EA61173F1D682FF74D /* PolishEngine.swift */,
 				0A8F83E8CC1D6BF61940939C /* PolishPromptBuilder.swift */,
-				3DB0C7010260E32F5585C582 /* RuleBasedPolisher.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -235,7 +232,6 @@
 				06B16429782B0A30B9D895B7 /* PolishPad2App.swift in Sources */,
 				5514F2607100DC449C46D8C2 /* PolishRequest.swift in Sources */,
 				BFFAD77C3F4008245B15C55A /* PolishWorkflowModel.swift in Sources */,
-				8D3359F1677CF02564B716D6 /* RuleBasedPolisher.swift in Sources */,
 				D098C0194121ADBEC6C098A0 /* StatusBanner.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,7 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A8A9D763B855FD30E7628BD /* RuleBasedPolisherTests.swift in Sources */,
+				8A8A9D763B855FD30E7628BD /* PolishWorkflowModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

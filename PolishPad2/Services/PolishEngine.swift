@@ -8,7 +8,6 @@ protocol PolishServicing: Sendable {
 
 struct LivePolishService: PolishServicing {
     private let foundation = FoundationModelPolisher()
-    private let fallback = RuleBasedPolisher()
 
     func capability(for locale: Locale = .current) -> PolishCapability {
         foundation.capability(for: locale)
@@ -26,9 +25,8 @@ struct LivePolishService: PolishServicing {
             } catch let error as LanguageModelSession.GenerationError {
                 switch error {
                 case .assetsUnavailable, .unsupportedLanguageOrLocale:
-                    return fallbackResponse(
-                        for: request,
-                        reason: "Full polish is temporarily unavailable. Using a basic local formatter instead."
+                    throw PolishEngineError.unavailable(
+                        "Apple Intelligence is temporarily unavailable for this text or language. Try again when the on-device model is available."
                     )
                 case .exceededContextWindowSize:
                     throw PolishEngineError.inputTooLong
@@ -46,15 +44,8 @@ struct LivePolishService: PolishServicing {
                     "PolishPad couldn’t finish this rewrite on device."
                 )
             }
-        case let .basicFormatter(reason):
-            return fallbackResponse(for: request, reason: reason)
+        case let .unavailable(reason):
+            throw PolishEngineError.unavailable(reason)
         }
-    }
-
-    private func fallbackResponse(for request: PolishRequest, reason: String) -> PolishResponse {
-        PolishResponse(
-            text: fallback.polish(request),
-            capability: .basicFormatter(reason: reason)
-        )
     }
 }

@@ -2,7 +2,9 @@
 
 Date: 2026-04-23
 Project: PolishPad2
-Status: Planned
+Status: Deferred - superseded for V1; do not implement as written
+
+Note: PolishPad V1 is Apple Intelligence-only. It does not ship OpenAI cloud polish, a backend proxy, or a basic local fallback. This document is preserved as a historical future-option draft only; implementing any cloud path would require a fresh plan, explicit user consent, updated App Privacy details, and privacy/support copy changes before release. References below to local/basic fallback describe the superseded pre-V1 design and are not current product behavior.
 
 ## Goal
 

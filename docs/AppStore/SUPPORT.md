@@ -1,6 +1,6 @@
 # PolishPad Support
 
-PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages.
+PolishPad is a private iPad writing utility that helps users turn rough typed or dictated text into clearer notes, emails, and messages using on-device Apple Intelligence.
 
 ## Contact Support
 
@@ -24,7 +24,7 @@ No. PolishPad does not require an account.
 
 ### Does PolishPad send my text to a server?
 
-No. PolishPad is designed to process text on device where available and does not send your draft or polished text to our servers.
+No. PolishPad processes text on device using Apple Intelligence and does not send your draft or polished text to our servers.
 
 ### How do I dictate text?
 
@@ -32,7 +32,7 @@ Tap into the writing area, then use the standard iPad keyboard dictation microph
 
 ### Why is polishing unavailable on my iPad?
 
-Some polishing features depend on Apple system capabilities and device availability. If those features are unavailable, PolishPad may provide a basic local fallback.
+Polishing requires Apple Intelligence on a compatible iPad. Apple Intelligence must be turned on, downloaded, available for your language and region, and ready before PolishPad can polish text.
 
 ### Can I copy or share the result?
 
